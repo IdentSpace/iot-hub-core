@@ -1,4 +1,4 @@
-# IoT Space
+# IoT Hub Core
 
 !!! Fresh and under development
 
@@ -9,14 +9,8 @@
 ## Install
 
 ## Run
-
-# On Windows:
-python .\run.py
-
-# On macOS/Linux:
-python ./run.py
 ```
-python .\run.py
+python ./run.py
 ```
 
 ## Milestones
