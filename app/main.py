@@ -2,6 +2,7 @@ from typing import Union
 from fastapi import FastAPI, status 
 from app.db.session import initialize_database
 from app.api import device_routes
+from app.core.scheduler import start_scheduler
 
 initialize_database()
 app = FastAPI()
@@ -20,3 +21,4 @@ def read_healt():
 
 
 # TODO: In threads unterteilen, z.B. device auth etc.
+start_scheduler()

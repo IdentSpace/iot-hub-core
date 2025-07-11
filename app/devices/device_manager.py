@@ -1,15 +1,15 @@
-def register_device(device_host: str, device_type: str, device_driver: str):
+def register_device(device_host: str, device_type: str, device_driver: str, device_name: str = None):
 	from app.db.models import Device
 	from app.db.session import get_session
 
 	with get_session() as session:
-		device = Device(device_host=device_host, device_type=device_type, device_driver=device_driver)
+		device = Device(name=device_name, device_host=device_host, device_type=device_type, device_driver=device_driver)
 		session.add(device)
 		session.commit()
 		session.refresh(device)
 		return device
 	
-def get_device(id: int):
+def get_device(id: str):
 	from app.db.models import Device
 	from app.db.session import get_session
 	from sqlmodel import select

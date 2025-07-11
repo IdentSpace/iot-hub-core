@@ -23,3 +23,4 @@ python .\run.py
 1) Controll different device types with shellys over http
 2) Over shelly websockets
 3) Add support for additional IoT brands and device typesMilestones
+4) Implement hooks
