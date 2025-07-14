@@ -3,3 +3,4 @@ requests
 sqlmodel
 python-dotenv
 APScheduler
+pyserial

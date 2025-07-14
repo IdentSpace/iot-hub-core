@@ -18,3 +18,4 @@ python ./run.py
 2) Over shelly websockets
 3) Add support for additional IoT brands and device typesMilestones
 4) Implement hooks
+5) Watch and Sync
