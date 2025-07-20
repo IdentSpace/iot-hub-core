@@ -4,7 +4,6 @@
 
 - a Python core library to manage devices such as Shelly, Sonoff, and other supported IoT brands.
 - users can integrate their own UI by interacting with the core library through HTTP or WebSocket APIs
-- 
 
 ## Install
 
@@ -15,7 +14,11 @@ python ./run.py
 
 ## Milestones
 1) Controll different device types with shellys over http
-2) Over shelly websockets
-3) Add support for additional IoT brands and device typesMilestones
-4) Implement hooks
-5) Watch and Sync
+2) Rolles and Cans
+3) Over shelly websockets
+4) Add support for additional IoT brands and device typesMilestones
+5) Implement hooks
+6) Watch and Sync
+
+## Partners
+DudoPark

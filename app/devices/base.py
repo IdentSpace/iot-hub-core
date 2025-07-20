@@ -26,4 +26,6 @@ class BaseDevice(ABC):
 	def get_state(self) -> DeviceState:
 		pass
 
+	#TODO: RAW COMMAND
+
 

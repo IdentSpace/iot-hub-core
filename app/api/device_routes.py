@@ -3,21 +3,44 @@ from uuid import UUID
 from fastapi import APIRouter, status
 from app.driver.driver_factory import driver_factory
 from app.api.response import IHCApiResponse
+from pydantic import BaseModel
 
 router = APIRouter()
 
-# TODO: POST
-@router.get("/register")
-def read_register_device() :
+class Device(BaseModel):
+	device_name: str
+	device_host: str
+	device_type: str
+	device_driver: str
+
+@router.post("/register")
+def read_register_device(device: Device) :
 	from app.devices.device_manager import register_device
 	try:
-		# TODO: Dev example
-		device = register_device(device_host="192.168.51.191", device_type="machine", device_driver="shelly_http")
+
+		device = register_device(
+			device_host=device.device_host,
+			device_type=device.device_type,
+			device_driver=device.device_driver,
+			device_name=device.device_name
+			)
+		
 		return IHCApiResponse(message="success").add_data(key="device", value=device).to_dict()
 	
 	except Exception as e:
 		return IHCApiResponse(message="error").add_error(key="device", value=str(e)).to_dict()
 		# status.HTTP_400_BAD_REQUEST
+
+# TODO: Implement
+@router.post("/update")
+def req_update_device():
+	pass
+
+
+# TODO: Implement
+@router.post("/delete")
+def req_update_device():
+	pass
 
 @router.get("/list")
 def request_get_devices() :
@@ -41,7 +64,7 @@ def request_get_devices_state(id: UUID) :
 	device = driver.get_state()
 	return IHCApiResponse(message="success").add_data(key="device", value=device).to_dict()
 
-@router.get("/event")
+@router.get("/{id}/event")
 def event_device(on: Union[bool, None] = None, id: Union[UUID, None] = None) :
 	if on is None or id is None:
 		return IHCApiResponse(message="error").add_error(key="device", value="Missing event or device id").to_dict()

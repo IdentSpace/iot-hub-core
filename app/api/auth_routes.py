@@ -3,9 +3,24 @@ from uuid import UUID
 from fastapi import APIRouter, status
 from app.api.response import IHCApiResponse
 import asyncio
+from pydantic import BaseModel
 
 router = APIRouter()
 pending_requests = []
+
+class AuthUsername(BaseModel):
+	username: str
+	password: str
+	# TODO: with expire wish
+
+
+# TODO: Implement
+@router.post("/login")
+def req_auth(auth: AuthUsername):
+	response = IHCApiResponse(message="success").add_data(key="access_token", value='XYZ')
+	response.add_data(key="expire_at", value=None)
+	return response.to_dict()
+
 
 @router.get("/wait-for-card")
 async def request_wait_for_card(timeout: int = 1000):
