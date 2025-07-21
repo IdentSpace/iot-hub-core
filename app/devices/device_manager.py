@@ -26,3 +26,15 @@ def get_devices():
 	with get_session() as session:
 		devices = session.exec(select(Device)).all()
 		return devices
+	
+def delete_device(id: str):
+	from app.db.models import Device
+	from app.db.session import get_session
+	from sqlmodel import delete
+
+	with get_session() as session:
+		statement = delete(Device).where(Device.id == id)
+		session.exec(statement)
+		session.commit()
+		return delete
+

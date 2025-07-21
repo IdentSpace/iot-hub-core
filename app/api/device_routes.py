@@ -64,6 +64,17 @@ def request_get_devices_state(id: UUID) :
 	device = driver.get_state()
 	return IHCApiResponse(message="success").add_data(key="device", value=device).to_dict()
 
+@router.get("/{id}/delete")
+def request_get_devices_state(id: UUID) :
+
+	if id is None:
+		return IHCApiResponse(message="error").add_error(key="device", value="Missing device id specified").to_dict()
+	
+	from app.devices.device_manager import delete_device
+	device = delete_device(id=id)
+
+	return IHCApiResponse(message="success").add_data(key="device", value=device).to_dict()
+
 @router.get("/{id}/event")
 def event_device(on: Union[bool, None] = None, id: Union[UUID, None] = None) :
 	if on is None or id is None:
