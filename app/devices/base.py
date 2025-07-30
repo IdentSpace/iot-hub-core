@@ -29,3 +29,15 @@ class BaseDevice(ABC):
 	#TODO: RAW COMMAND
 
 
+class Default(BaseDevice):
+	def __init__(self, ip: str = "", relay: int = 0, name: str = "DefaultDevice"):
+		self.state = None
+
+	def turn_on(self):
+		return self.state
+	
+	def turn_off(self):
+		return self.state
+
+	def get_state(self) -> DeviceState:
+		return DeviceState(state=DeviceState.NONE, message="NOT IMPLEMENTED", raw_data={})

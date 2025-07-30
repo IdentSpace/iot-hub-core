@@ -17,9 +17,17 @@ class AuthUsername(BaseModel):
 # TODO: Implement
 @router.post("/login")
 def req_auth(auth: AuthUsername):
-	response = IHCApiResponse(message="success").add_data(key="access_token", value='XYZ')
+	from app.auth.authentification import Auth
+
+	token = Auth.loginByUsername(auth.username, auth.password)
+
+	if(token == None):
+		response = IHCApiResponse(message="error").add_error(key="auth", value="can not login").set_status_code(400)
+		return response.api_response()
+
+	response = IHCApiResponse(message="success").add_data(key="access_token", value=token)
 	response.add_data(key="expire_at", value=None)
-	return response.to_dict()
+	return response.api_response()
 
 
 @router.get("/wait-for-card")
