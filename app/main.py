@@ -13,7 +13,7 @@ initialize_database()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 	start_scheduler()
-	reader_thread = NfcReader().listen_in_thread()
+	# reader_thread = NfcReader().listen_in_thread()
 	yield
 
 

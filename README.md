@@ -7,6 +7,17 @@
 
 ## Install
 
+Global installation of packages
+```
+pip3 install -r requirements.txt
+```
+
+Local environment
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
 ## Run
 ```
 python ./run.py
