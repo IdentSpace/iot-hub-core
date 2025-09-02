@@ -1,8 +1,9 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from app.driver.default_data_scanner import DefaultDataScanner
 
-from app.devices.data_scanner import DataScanner
+scanner = DefaultDataScanner(port="COM3")
+print(scanner.list_bases())
 
-scanner =  DataScanner(port="COM3")
 scanner.listen()
