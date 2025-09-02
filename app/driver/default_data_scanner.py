@@ -44,3 +44,6 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 
     def get_state(self):
         return DeviceState(state=DeviceState.NONE, message="NOT IMPLEMENTED", raw_data={})
+    
+    def raw_command(self):
+        return super().raw_command()

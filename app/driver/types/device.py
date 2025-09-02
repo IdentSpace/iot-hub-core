@@ -15,7 +15,11 @@ class DeviceState:
 class DeviceBase(ABC):
 
 	@abstractmethod
-	def get_state(self) -> DeviceState:
+	def get_state(self)->DeviceState:
+		pass
+
+	@abstractmethod
+	def raw_command(self):
 		pass
 
 	def list_bases(self):
@@ -27,8 +31,6 @@ class DeviceBase(ABC):
 			and base is not DeviceBase
             and base is not type(self)
         ]
-
-	#TODO: RAW COMMAND
 
 class Default(DeviceBase):
 	def __init__(self, ip: str = "", relay: int = 0, name: str = "DefaultDevice"):

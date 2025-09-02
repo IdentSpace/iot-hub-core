@@ -1,8 +1,8 @@
+from app.driver.types.device import DeviceBase, DeviceState
 import requests
-from app.devices.base import BaseDevice, DeviceState
 
 # GEN 2 RPC API
-class ShellyDevice(BaseDevice):
+class Shelly(DeviceBase):
 	def __init__(self, ip: str = "", relay: int = 0, name: str = "ShellyDevice"):
 		self.ip = ip
 		self.relay = relay
@@ -29,6 +29,9 @@ class ShellyDevice(BaseDevice):
 	def turn_off(self):
 		self._request("false")
 		return self.state
+	
+	def raw_commnand(self):
+		pass
 	
 	def get_state(self):
 		url = f"http://{self.ip}/rpc/Shelly.GetStatus?id=0"

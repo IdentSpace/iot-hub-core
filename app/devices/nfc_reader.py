@@ -22,9 +22,6 @@ class NfcReader:
 				if data:
 					print(f"Received NFC data: {data}")
 					set_latest_nfc_data(NfcData(uid=data))
-					# Here you can add logic to handle the received NFC data
-					# For example, you could trigger an event or store the data in a database
-
 
 	def listen_in_thread(self):
 		self.thread = threading.Thread(target=self.listen)
