@@ -4,7 +4,7 @@ from app.db.session import initialize_database
 from app.api import device_routes
 from app.api import auth_routes
 from app.core.scheduler import start_scheduler
-from app.devices.nfc_reader import NfcReader
+from app.driver.default_nfc_reader import NfcReader
 from app.core.health import HealthCheck
 from contextlib import asynccontextmanager
 

@@ -1,15 +1,11 @@
+from app.driver.types.nfc_reader import NfcReader,NfcData
+from app.driver.types.device import DeviceBase, DeviceState
+from app.state.nfc import set_latest_nfc_data
 import serial
 import threading
-from datetime import datetime
-from app.state.nfc import set_latest_nfc_data
 
-class NfcData:
-	def __init__(self, uid: str):
-		self.uid = uid
-		self.timestamp = datetime.now()
-
-class NfcReader:
-	def __init__(self, port="COM6", baudrate=9600):
+class DefaultNfcReader(DeviceBase, NfcReader):
+	def __init__(self, port, baudrate=9600):
 		self.port = port
 		self.baudrate = baudrate
 		self.serial = serial.Serial(port, baudrate, timeout=1)
