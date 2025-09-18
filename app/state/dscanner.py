@@ -1,6 +1,7 @@
 from threading import Lock
 
 dscanner_lock = Lock()
+# TODO: Refactor to array
 latest_nfc_data = None
 
 def set_latest_dscanner_data(data):

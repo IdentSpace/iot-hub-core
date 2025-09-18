@@ -107,3 +107,4 @@ class ApiKey(SQLModel, table=True):
 	user_id: int = Field(foreign_key="user.id", nullable=False)
 	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
 	expires_at: datetime = Field(nullable=True)
+	# latest_call: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
