@@ -35,5 +35,5 @@ class AS1620(DeviceBase, ParkingBarrier):
 		return DeviceState(state=DeviceState.NONE, message="NOT IMPLEMENTED", raw_data={})
 	
 	def raw_command(self):
-		return super().raw_command()
+		return []
 	

@@ -14,6 +14,10 @@ class DeviceState:
 
 class DeviceBase(ABC):
 
+	# @abstractmethod
+	# def has_web(self)->DeviceState:
+		# pass
+
 	@abstractmethod
 	def get_state(self)->DeviceState:
 		pass
@@ -44,3 +48,6 @@ class Default(DeviceBase):
 
 	def get_state(self) -> DeviceState:
 		return DeviceState(state=DeviceState.NONE, message="NOT IMPLEMENTED", raw_data={})
+	
+	def raw_command(self):
+		pass

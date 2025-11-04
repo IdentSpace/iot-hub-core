@@ -3,6 +3,11 @@ from sqlalchemy import Column, DateTime, UniqueConstraint
 from datetime import datetime, timezone, time
 from uuid import UUID, uuid4
 
+class SysValues(SQLModel, table=True):
+	__tablename__ = "sys_values"
+	name: str = Field(index=True, nullable=False, primary_key=True)
+	value: str = Field(nullable=True)
+
 # brauche ich?
 class DeviceType(SQLModel, table=True):
 	__tablename__ = "device_type"
@@ -25,6 +30,7 @@ class Device(SQLModel, table=True):
 	device_host: str = Field(index=True, nullable=False, unique=True)
 	device_type: str = Field(foreign_key="device_type.id", default=None, nullable=True)
 	device_driver: str = Field(foreign_key="device_driver.id", nullable=True)
+	baudrate: int = Field(default=19200, nullable=True)
 	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
 
 class User(SQLModel, table=True):

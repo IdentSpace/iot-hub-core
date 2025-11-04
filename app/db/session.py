@@ -1,14 +1,37 @@
 from sqlmodel import SQLModel, create_engine, Session, select
+import os
+import sys
 
-DATABASE_URL = "sqlite:///./data.db"
-engine = create_engine(DATABASE_URL, echo=True)
+def get_db_path(filename="data.db"):
+    # PyInstaller erkennt man an _MEIPASS
+    if hasattr(sys, "_MEIPASS"):
+        # Speichert die DB neben der EXE
+        return os.path.join(os.path.dirname(sys.executable), filename)
+    else:
+        # Normales Skript: aktueller Ordner
+        return os.path.abspath(filename)
+
+db_path = get_db_path()
+
+# DATABASE_URL = "sqlite:///./data.db"
+DATABASE_URL = f"sqlite:///{db_path}"
+
+sync_engine  = create_engine(DATABASE_URL, echo=True, pool_size=5, max_overflow=10, connect_args={"check_same_thread": False})
 
 def get_session():
-	return Session(engine)
+	return Session(sync_engine )
 
 def default_data():
 	with get_session() as session:
-		from app.db.models import DeviceType, DeviceDriver, User, KeyType
+		from app.db.models import SysValues, DeviceType, DeviceDriver, User, KeyType
+
+		# Insert default device types
+		has_sys_values = session.exec(select(SysValues)).first()
+		if has_sys_values is None:
+			default = [
+				SysValues(name="WEBHOOK_1", value=""),
+			]
+			session.add_all(default)
 
 		# Insert default device types
 		has_device_types = session.exec(select(DeviceType)).first()
@@ -19,6 +42,8 @@ def default_data():
 				DeviceType(name="machine", description="machine like in a workshop"),
 				DeviceType(name="door", description="doors"),
 				DeviceType(name="heater", description="heater"),
+				DeviceType(name="datascanner", description="datascanner"),
+				DeviceType(name="nfcreader", description="Basic NFC reader"),
 			]
 			session.add_all(default)
 			
@@ -27,6 +52,9 @@ def default_data():
 		if has_device_drivers is None:
 			default = [
 				DeviceDriver(name="shelly_http", description="Shelly devices via HTTP"),
+				DeviceDriver(name="default_datascanner", description="Default Data Scanner 1D / 2D"),
+				DeviceDriver(name="default_nfcreader", description="Default NFC Scanner"),
+				DeviceDriver(name="as1620", description="Parking Barrier from Automatic Systems"),
 			]
 			session.add_all(default)
 
@@ -50,6 +78,6 @@ def default_data():
 
 def initialize_database():
 	from . import models
-	SQLModel.metadata.create_all(engine)
+	SQLModel.metadata.create_all(sync_engine )
 	default_data()
 	# if create, insert default data here

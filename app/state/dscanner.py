@@ -1,12 +1,28 @@
 from threading import Lock
+import requests
+from app.driver.types.data_scanner import DataScannerData
+from app.db.session import get_session
+from app.db.models import SysValues
+from sqlmodel import select
 
 dscanner_lock = Lock()
 # TODO: Refactor to array
 latest_nfc_data = None
 
-def set_latest_dscanner_data(data):
+def set_latest_dscanner_data(data: DataScannerData):
 	global latest_dscanner_data
 	latest_dscanner_data = data
+	try:
+		with get_session() as session:
+			webhookData = session.exec(select(SysValues).where(SysValues.name == "WEBHOOK_DATASCANNER")).first()
+			if(webhookData == None): return
+			try:
+				requests.get(webhookData.value + data.toUrlQuery(), timeout=2)
+			except Exception as e:
+				print("[WEBHOOK ERROR] ")
+	except Exception as e:
+		print(e)
+
 
 def pop_latest_dscanner_data():
 	global latest_dscanner_data

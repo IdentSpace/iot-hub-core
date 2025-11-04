@@ -85,14 +85,18 @@ def event_device(on: Union[bool, None] = None, id: Union[UUID, None] = None) :
 	device = get_device(id=id)
 
 	if not device:
-		return IHCApiResponse(message="error").add_error(key="device", value="Device not fount").to_dict()
+		return IHCApiResponse(message="error").add_error(key="device", value="Device not found").to_dict()
 
-	driver = driver_factory(driver_type=device.device_driver, ip=device.device_host, relay=0, name=device.name)
+	# TODO: fix driver laoding 
+	driver = driver_factory(driver_type='as1620', ip=device.device_host, port=8081)
+	# driver = driver_factory(driver_type='as1620', ip=device.device_host, relay=0, name=device.name)
 
 	if on is True:
-		driver.turn_on()
+		driver.open_tree()
+		# driver.turn_on()
 		return IHCApiResponse(message="success").add_data(key="device", value=driver.state).to_dict()
 	
 	if on is False:
-		driver.turn_off()
+		# driver.turn_off()
+		driver.close_tree()
 		return IHCApiResponse(message="success").add_data(key="device", value=driver.state).to_dict()

@@ -23,6 +23,9 @@ source venv/bin/activate
 python ./run.py
 ```
 
+## Build Windows Client
+python -m PyInstaller --onefile --add-data "app;app" --hidden-import fastapi --hidden-import uvicorn --hidden-import sqlmodel --hidden-import requests --hidden-import aiosqlite .\run.build.py
+
 ## Milestones
 1) Controll different device types with shellys over http
 2) Rolles and Cans

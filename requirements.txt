@@ -4,3 +4,4 @@ sqlmodel
 python-dotenv
 APScheduler
 pyserial
+aiosqlite
