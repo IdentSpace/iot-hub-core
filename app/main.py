@@ -50,13 +50,14 @@ async def lifespan(app: FastAPI):
 			devices = result.all()
 			print(f"=> loaded {len(devices)} devices configs from DB")
 			for device in devices:
-				try:
-					print(f"==> factory driver: {device.name} ({device.device_type}) on {device.device_host} with driver {device.device_driver}")
-					driver = driver_factory(driver_type="default_nfcreader", port=device.device_host, baudrate=device.baudrate)
-					driver.listen_in_thread()
-				except Exception as e:
-					print("==> ERROR " + str(e))
-					pass
+				print("TODO: Reimplement")
+				# try:
+				# 	print(f"==> factory driver: {device.name} ({device.device_type}) on {device.device_host} with driver {device.device_driver}")
+				# 	driver = driver_factory(driver_type="default_nfcreader", port=device.device_host, baudrate=device.baudrate)
+				# 	driver.listen_in_thread()
+				# except Exception as e:
+				# 	print("==> ERROR " + str(e))
+				# 	pass
 		except Exception as e:
 			print("=> ERROR " + str(e))
 			pass

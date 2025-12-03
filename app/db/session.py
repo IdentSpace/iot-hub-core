@@ -44,6 +44,7 @@ def default_data():
 				DeviceType(name="heater", description="heater"),
 				DeviceType(name="datascanner", description="datascanner"),
 				DeviceType(name="nfcreader", description="Basic NFC reader"),
+				DeviceType(name="parking_barrier", description="Parking Barrier"),
 			]
 			session.add_all(default)
 			

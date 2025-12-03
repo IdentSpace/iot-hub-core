@@ -5,6 +5,12 @@
 - a Python core library to manage devices such as Shelly, Sonoff, and other supported IoT brands.
 - users can integrate their own UI by interacting with the core library through HTTP or WebSocket APIs
 
+## Tested Driver
+
+| Device   | Connection | Usage   |
+|----------|------------|---------|
+| Automatic Systems AS1620 | Network  | Parking Barrier
+
 ## Install
 
 Global installation of packages
