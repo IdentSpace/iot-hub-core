@@ -7,7 +7,6 @@ scheduler = BackgroundScheduler()
 
 def start_scheduler():
 	rooms = RoomUtils.load_rooms()
-	print(f"Loaded {len(rooms)} rooms for scheduling.")
 
 	# TODO: await for x sec. (?)
 

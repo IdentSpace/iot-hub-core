@@ -16,7 +16,7 @@ db_path = get_db_path()
 # DATABASE_URL = "sqlite:///./data.db"
 DATABASE_URL = f"sqlite:///{db_path}"
 
-sync_engine  = create_engine(DATABASE_URL, echo=True, pool_size=5, max_overflow=10, connect_args={"check_same_thread": False})
+sync_engine  = create_engine(DATABASE_URL, echo=False, pool_size=5, max_overflow=10, connect_args={"check_same_thread": False})
 
 def get_session():
 	return Session(sync_engine )
@@ -56,6 +56,7 @@ def default_data():
 				DeviceDriver(name="default_datascanner", description="Default Data Scanner 1D / 2D"),
 				DeviceDriver(name="default_nfcreader", description="Default NFC Scanner"),
 				DeviceDriver(name="as1620", description="Parking Barrier from Automatic Systems"),
+				DeviceDriver(name="feig_cpr0210", description="Feig CPR0210 NFC Reader"),
 			]
 			session.add_all(default)
 

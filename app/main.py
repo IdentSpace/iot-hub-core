@@ -15,9 +15,13 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import select
 from app.db.models import Device
+import logging
 
 import os
 import sys
+
+logger = logging.getLogger("uvicorn.error")
+
 
 def get_db_path(filename="data.db"):
     if hasattr(sys, "_MEIPASS"):
@@ -43,23 +47,23 @@ initialize_database()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 	start_scheduler()
+
+	# TODO: Refactor implment connection class etc.
 	async with get_async_session() as session:
 		try:
-			print("Try to load device drivers...")
-			result = await session.exec(select(Device))
-			devices = result.all()
-			print(f"=> loaded {len(devices)} devices configs from DB")
+			from app.devices.device_manager import get_devices_serial
+			devices = get_devices_serial()
+			
+			logger.info(f"Found {len(devices)} serial devices configs from DB")
 			for device in devices:
-				print("TODO: Reimplement")
-				# try:
-				# 	print(f"==> factory driver: {device.name} ({device.device_type}) on {device.device_host} with driver {device.device_driver}")
-				# 	driver = driver_factory(driver_type="default_nfcreader", port=device.device_host, baudrate=device.baudrate)
-				# 	driver.listen_in_thread()
-				# except Exception as e:
-				# 	print("==> ERROR " + str(e))
-				# 	pass
+				try:
+					logger.info(f"==> factory driver: {device['name']} ({device['device_type']}) on {device['device_host']} with driver {device['device_driver_name']}")
+					driver = driver_factory(driver_type=device["device_driver_name"], args={'port': device["device_host"], 'baudrate': device["baudrate"]})
+					driver.listen_in_thread()
+				except Exception as e:
+					logger.error(str(e))
 		except Exception as e:
-			print("=> ERROR " + str(e))
+			logger.error(str(e))
 			pass
 	yield
 
@@ -81,5 +85,5 @@ def read_healt():
 	return {"message": "fine"}
 
 
-print("IoT Space is running! 0.2.3")
-print(HealthCheck("IoT Space", "OK").getThreads())
+logger.info("IoT Space is running! 0.2.3")
+logger.info(HealthCheck("IoT Space", "OK").getThreads())

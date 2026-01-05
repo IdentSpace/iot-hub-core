@@ -17,7 +17,9 @@ def set_latest_dscanner_data(data: DataScannerData):
 			webhookData = session.exec(select(SysValues).where(SysValues.name == "WEBHOOK_DATASCANNER")).first()
 			if(webhookData == None): return
 			try:
-				requests.get(webhookData.value + data.toUrlQuery(), timeout=2)
+				query =  data.toUrlQuery()
+				print(f"[WEBHOOK] Sending DataScanner data to webhook: {webhookData.value}?{query}")
+				requests.get(webhookData.value + query, timeout=2)
 			except Exception as e:
 				print("[WEBHOOK ERROR] ")
 	except Exception as e:

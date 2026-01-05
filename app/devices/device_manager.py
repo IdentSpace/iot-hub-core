@@ -54,7 +54,30 @@ def get_devices():
 		rows = session.execute(query).fetchall()
 		devices = [dict(row._mapping) for row in rows]
 		return devices
-	
+
+def get_devices_serial():
+	from app.db.models import Device
+	from app.db.session import get_session
+	from sqlmodel import select
+	from sqlalchemy import text
+
+	# TODO: Refactor, if windows COM or Linux /dev/tty 
+	query = text("""
+		SELECT 
+			d.id, d.name, d.device_host, d.baudrate,
+			d.device_driver, dd.name as device_driver_name,
+			d.device_type, dt.name as device_type_name
+		FROM device d
+		LEFT JOIN device_type dt ON d.device_type = dt.id
+		LEFT JOIN device_driver dd ON d.device_driver = dd.id
+		WHERE d.device_host LIKE 'COM%' OR d.device_host LIKE '/dev/tty%'
+		""")
+
+	with get_session() as session:
+		rows = session.execute(query).fetchall()
+		devices = [dict(row._mapping) for row in rows]
+		return devices
+
 def delete_device(id: str):
 	from app.db.models import Device
 	from app.db.session import get_session

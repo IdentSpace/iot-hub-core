@@ -7,10 +7,10 @@ import time
 
 class DefaultDataScanner(DeviceBase, DataScanner):
 
-	def __init__(self,port:str,baudrate=9600,timeout=1):
-		self.port = port
-		self.baudrate = baudrate
-		self.timeout = timeout
+	def __init__(self, args:dict):
+		self.port = args.get("port", None)
+		self.baudrate = args.get("baudrate", 9600) or 9600
+		self.timeout = args.get("timeout", 1)
 		self.thread = None
 		self.serial = None
 
@@ -39,7 +39,7 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 							else:
 								set_latest_dscanner_data(DataScannerData(type="raw",data=data))
 					except Exception as e:
-						print("Error ")
+						print("Error Scanner Readline: " + str(e))
 						continue
 			except Exception as e:
 				print("FEHLER LISTEN")

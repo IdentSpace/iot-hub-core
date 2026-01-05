@@ -6,11 +6,12 @@ import threading
 import time
 
 class DefaultNfcReader(DeviceBase, NfcReader):
-	def __init__(self, port, baudrate=115200, timeout=0.3):
-		self.port = port
-		self.baudrate = baudrate
-		self.timeout = timeout
-		self.serial = serial.Serial(port, baudrate, timeout=timeout)
+	# def __init__(self, port, baudrate=115200, timeout=0.3):
+	def __init__(self, args:dict):
+		self.port = args.get("port", None)
+		self.baudrate = args.get("baudrate", 115200)
+		self.timeout = 0.3
+		self.serial = serial.Serial(self.port, self.baudrate, timeout=self.timeout)
 		self.thread = None
 
 	def connect(self):
