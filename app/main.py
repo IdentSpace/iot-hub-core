@@ -37,6 +37,6 @@ def read_healt():
 	# do something with a device
 	return {"message": "fine"}
 
-
-logger.info("IoT Hub is running! 0.2.3")
+# TODO: Output system information here
+logger.info("IoT Hub is running! 0.5.4")
 logger.info(HealthCheck("IoT Hub", "OK").getThreads())
