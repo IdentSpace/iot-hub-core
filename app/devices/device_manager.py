@@ -88,6 +88,24 @@ def delete_device(id: str):
 		session.exec(statement)
 		session.commit()
 		return delete
+	
+def update_device(id,data:dict):
+	from app.db.models import Device
+	from app.db.session import get_session
+	from uuid import UUID
+
+	with get_session() as session:
+		device = session.get(Device,  UUID(id))
+		if not device:
+			return None
+		for key, value in data.items():
+			# TODO: Validate keys
+			setattr(device, key, value)
+		session.add(device)
+		session.commit()
+		session.refresh(device)
+		return device
+	return None
 
 def get_drivers():
 	from app.db.models import DeviceDriver

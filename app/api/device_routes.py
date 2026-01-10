@@ -22,7 +22,6 @@ class DeviceType(BaseModel):
 def read_register_device(device: Device) :
 	from app.devices.device_manager import register_device
 	try:
-
 		device = register_device(
 			device_host=device.device_host,
 			device_type=device.device_type,
@@ -52,16 +51,19 @@ def req_register_type(type: DeviceType) :
 		return IHCApiResponse(message="error").add_error(key="device_type", value=str(e)).to_dict()
 		# status.HTTP_400_BAD_REQUEST
 
-# TODO: Implement
 @router.post("/update")
-def req_update_device():
-	pass
+def req_update_device(data: dict):
+	from app.devices.device_manager import update_device
 
+	if "id" not in data:
+		return IHCApiResponse(message="error").add_error(key="device", value="Missing device id").api_response()
 
-# TODO: Implement
-@router.post("/delete")
-def req_update_device():
-	pass
+	device_id = data.pop("id")
+	device = update_device(id=device_id, data=data)
+	if not device:
+		return IHCApiResponse(message="error").add_error(key="device", value="Device not found").api_response()
+	
+	return IHCApiResponse(message="success").add_data(key="device", value="").api_response()
 
 @router.get("/list")
 def request_get_devices() :
@@ -98,7 +100,7 @@ def request_get_devices_state(id: UUID) :
 	return IHCApiResponse(message="success").add_data(key="device", value=device).to_dict()
 
 @router.get("/{id}/delete")
-def request_get_devices_state(id: UUID) :
+def request_get_delete_state(id: UUID) :
 
 	if id is None:
 		return IHCApiResponse(message="error").add_error(key="device", value="Missing device id specified").to_dict()

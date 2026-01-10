@@ -4,6 +4,10 @@ from app.driver.types.data_scanner import DataScannerData
 from app.db.session import get_session
 from app.db.models import SysValues
 from sqlmodel import select
+import logging
+
+logger = logging.getLogger("uvicorn.error")
+
 
 dscanner_lock = Lock()
 # TODO: Refactor to array
@@ -18,12 +22,15 @@ def set_latest_dscanner_data(data: DataScannerData):
 			if(webhookData == None): return
 			try:
 				query =  data.toUrlQuery()
-				print(f"[WEBHOOK] Sending DataScanner data to webhook: {webhookData.value}?{query}")
-				requests.get(webhookData.value + query, timeout=2)
+				url = webhookData.value + query
+				logger.info(f"[WEBHOOK] DataScanner: {url}")
+				requests.get(url, timeout=2)
 			except Exception as e:
-				print("[WEBHOOK ERROR] ")
+				logger.error("[STATE WEBHOOK] DataScanner(WD1): " + str(e))
+
 	except Exception as e:
-		print(e)
+		logger.error("[STATE] DataScanner(WD2): " + str(e))
+
 
 
 def pop_latest_dscanner_data():
@@ -40,5 +47,5 @@ def get_and_pop_latest_dscanner_data():
 			latest_dscanner_data = None
 			return to_return
 	except Exception as e:
-		print(f"Error getting dscanner data from queue: {e}")
+		logger.error("[STATE] DataScanner(WD3): " + str(e))
 		return None

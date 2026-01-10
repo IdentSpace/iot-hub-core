@@ -36,7 +36,18 @@ async def rq_config_get_list(configName:str):
 	value = get_sysvalue(configName)
 	return IHCApiResponse().add_data(configName, value).to_dict()
 
+@router.post("/set")
+async def rq_config_set_value(data: dict):
+	name = data.get("name")
+	value = data.get("value")
+	from app.db.config_controller import set_sysvalue
+	set_sysvalue(name, value)
+	return IHCApiResponse(message="success").api_response()
 
-@router.post("/set/{configName}")
-async def rq_config_set_value():
-	return IHCApiResponse(message="not implemented").to_dict()
+
+@router.get("/restart/threads")
+async def rq_config_restart_threads():
+	from app.core.threadrunner import restart_threads, start_threading
+	restart_threads()
+	await start_threading()
+	return IHCApiResponse(message="success").api_response()
