@@ -1,0 +1,14 @@
+[Unit]
+Description=IoT Hub Core Python Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/iot-hub-core
+ExecStart=/opt/iot-hub-core/venv/bin/python3 run.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

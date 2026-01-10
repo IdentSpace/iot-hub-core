@@ -40,5 +40,13 @@ python -m PyInstaller --onefile --add-data "app;app" --hidden-import fastapi --h
 5) Implement hooks
 6) Watch and Sync
 
+## Shortcuts
+```
+systemctl status iot-hub-core
+```
+
+## Maintainer
+IdentSpace
+
 ## Partners
-DudoPark
+2G Konzept DudoPark
