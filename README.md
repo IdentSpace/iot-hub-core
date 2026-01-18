@@ -25,7 +25,11 @@ source venv/bin/activate
 ```
 
 ## Run
+wget ... prepare-install.sh
+...
+
 ```
+systemctl start iot-hub-core
 python ./run.py
 ```
 
@@ -42,7 +46,12 @@ python -m PyInstaller --onefile --add-data "app;app" --hidden-import fastapi --h
 
 ## Shortcuts
 ```
+lsusb
+lsusb -d <usbvendorpid> -v
+
+
 systemctl status iot-hub-core
+journalctl -u iot-hub-core -f
 ```
 
 ## Maintainer
