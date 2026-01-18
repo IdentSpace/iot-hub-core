@@ -1,9 +1,16 @@
-def register_device(device_host: str, device_type: str, device_driver: str, device_name: str = None):
+def register_device(device_host: str, device_type: str, device_driver: str, device_name: str = None, baudrate:int = None, channel:int = 0):
 	from app.db.models import Device
 	from app.db.session import get_session
 
 	with get_session() as session:
-		device = Device(name=device_name, device_host=device_host, device_type=device_type, device_driver=device_driver)
+		device = Device(
+			name=device_name,
+			device_host=device_host,
+			device_type=device_type,
+			device_driver=device_driver,
+			baudrate=baudrate,
+			channel=channel
+		)
 		session.add(device)
 		session.commit()
 		session.refresh(device)
@@ -17,7 +24,7 @@ def get_device(id: str):
 
 	query = text("""
 		SELECT 
-			d.id, d.name, d.device_host, d.baudrate,
+			d.id, d.name, d.device_host, d.baudrate, d.channel,
 			d.device_driver, dd.name as device_driver_name,
 			d.device_type, dt.name as device_type_name
 		FROM device d
@@ -42,7 +49,7 @@ def get_devices():
 
 	query = text("""
 		SELECT 
-			d.id, d.name, d.device_host, d.baudrate,
+			d.id, d.name, d.device_host, d.baudrate,d.channel,
 			d.device_driver, dd.name as device_driver_name,
 			d.device_type, dt.name as device_type_name
 		FROM device d
@@ -64,7 +71,7 @@ def get_devices_serial():
 	# TODO: Refactor, if windows COM or Linux /dev/tty 
 	query = text("""
 		SELECT 
-			d.id, d.name, d.device_host, d.baudrate,
+			d.id, d.name, d.device_host, d.baudrate, d.channel,
 			d.device_driver, dd.name as device_driver_name,
 			d.device_type, dt.name as device_type_name
 		FROM device d

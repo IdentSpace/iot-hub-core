@@ -33,7 +33,7 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 							timeout=self.timeout
 						)
 					except serial.SerialException as e:
-						logger.error("Device {self.name} Error(R1): " + str(e))
+						logger.error(f"Device {self.name} Error(R1): " + str(e))
 						time.sleep(2)
 						continue
 
@@ -53,27 +53,27 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 					else:
 						set_latest_dscanner_data(DataScannerData(type="raw",data=data))
 				except Exception as e:
-					logger.error("Device {self.name} Error(R2): " + str(e))
+					logger.error(f"Device {self.name} Error(R2): " + str(e))
 					continue
 			except Exception as e:
-				logger.error("Device {self.name} Error(R3): " + str(e))
+				logger.error(f"Device {self.name} Error(R3): " + str(e))
 				self.serial.close()
 				time.sleep(2)
 				continue
 
 	def listen_in_thread(self):
 		try:
-			logger.info("Device {self.name}: listen in thread")
+			logger.info(f"Device {self.name}: listen in thread")
 			self.thread = threading.Thread(target=self.listen, daemon=True)
 			self.thread.start()
 			return self
 		except Exception as e:
-			logger.error("Device {self.name} Error(R4): " + str(e))
+			logger.error(f"Device {self.name} Error(R4): " + str(e))
 			return self
 
 
 	def close(self):
-		logger.info("Device {self.name}: close serial")
+		logger.info(f"Device {self.name}: close serial")
 		self._stop_event.set()
 		if self.serial and self.serial.is_open:
 			self.serial.close()

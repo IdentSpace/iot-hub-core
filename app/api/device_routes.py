@@ -4,6 +4,9 @@ from fastapi import APIRouter, status
 from app.driver.driver_factory import driver_factory
 from app.api.response import IHCApiResponse
 from pydantic import BaseModel
+import logging
+
+logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 
@@ -111,18 +114,24 @@ def request_get_delete_state(id: UUID) :
 	return IHCApiResponse(message="success").add_data(key="device", value=device).to_dict()
 
 @router.get("/{id}/event")
-def event_device(cmd: Union[str, None] = None, arg: Union[str, None] = None, id: Union[UUID, None] = None) :
-	if cmd is None or id is None:
-		return IHCApiResponse(message="error").add_error(key="device", value="Missing event or device id").to_dict()
-	
-	from app.devices.device_manager import get_device
-	
-	device = get_device(id=id)
+def event_device(cmd: Union[str, None] = None, arg: Union[str, None] = None, id: Union[UUID, None] = None):
+	try:
+		if id is None:
+			return IHCApiResponse(message="error").add_error(key="device", value="missing device id").to_dict()
+		
+		if cmd is None:
+			return IHCApiResponse(message="error").add_error(key="device", value="Missing event").to_dict()
+		
+		from app.devices.device_manager import get_device
+		
+		device = get_device(id=id)
 
-	if not device:
-		return IHCApiResponse(message="error").add_error(key="device", value="Device not found").to_dict()
+		if not device:
+			return IHCApiResponse(message="error").add_error(key="device", value="Device not found").to_dict()
 
-	driver = driver_factory(driver_type=device["device_driver_name"], args=device)
+		driver = driver_factory(driver_type=device["device_driver_name"], args=device)
 
-	driver.web_command(cmd=cmd, arg=arg)
-	return IHCApiResponse(message="success").add_data(key="device", value=driver.get_status()).to_dict()
+		driver.web_command(cmd=cmd, arg=arg)
+		return IHCApiResponse(message="success").add_data(key="device", value=driver.get_state()).to_dict()
+	except Exception as e:
+		logger.error(f"API Device Event: {e}")

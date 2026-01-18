@@ -31,7 +31,9 @@ class Device(SQLModel, table=True):
 	device_type: str = Field(foreign_key="device_type.id", default=None, nullable=True)
 	device_driver: str = Field(foreign_key="device_driver.id", nullable=True)
 	baudrate: int = Field(default=19200, nullable=True)
+	channel: int = Field(default=0, nullable=True)
 	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
+	updated_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=True)
 
 class User(SQLModel, table=True):
 	id: int = Field(default=None, primary_key=True)
