@@ -1,14 +1,16 @@
-# IoT Hub Core
+# IOHub Service
 
 !!! Fresh and under development
 
-- a Python core library to manage devices such as Shelly, Sonoff, and other supported IoT brands.
-- users can integrate their own UI by interacting with the core library through HTTP or WebSocket APIs
+- A Service to manage IP or Serial devices such as Shelly or defferent serial devices.
+- Users can integrate with their own UI by interacting with the service through HTTP APIs
 
 ## Tested Driver
 
 | Device   | Connection | Usage   |
 |----------|------------|---------|
+| Shelly PM | Network  | IoT
+| Datascanner | Serial | Barcodes / Datamatrix
 | Automatic Systems AS1620 | Network  | Parking Barrier
 
 ## Install
