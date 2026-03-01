@@ -1,18 +1,16 @@
-from typing import Union
 from fastapi import FastAPI 
-from app.core.threadrunner import start_threading
-from app.db.session import initialize_database
+import tomllib
 from app.api import device_routes
 from app.api import auth_routes
 from app.api import config_routes
+from app.db.session import initialize_database
+from app.core.utils import get_resource_path
+from app.core.threadrunner import start_threading
 from app.core.scheduler import start_scheduler
-from app.core.health import HealthCheck
 from contextlib import asynccontextmanager
 import logging
 
-
 logger = logging.getLogger("uvicorn.error")
-
 initialize_database()
 
 @asynccontextmanager
@@ -37,6 +35,10 @@ def read_healt():
 	# do something with a device
 	return {"message": "fine"}
 
+
+TOML_PATH = get_resource_path("pyproject.toml")
+with open(TOML_PATH, "rb") as f:
+	config = tomllib.load(f)
+
 # TODO: Output system information here
-logger.info("IoT Hub is running! 0.5.4")
-logger.info(HealthCheck("IoT Hub", "OK").getThreads())
+logger.info("%s %s is running", config["project"]["name"], config["project"]["version"]) 

@@ -32,4 +32,15 @@ def set_sysvalue(name:str, value:str):
         
         session.commit()
 
+def delete_sysvalue(name: str):
+	from app.db.models import SysValues
+	from app.db.session import get_session
+	from sqlmodel import delete
+
+	with get_session() as session:
+		statement = delete(SysValues).where(SysValues.name == name)
+		session.exec(statement)
+		session.commit()
+		return delete
+
         

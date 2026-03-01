@@ -19,6 +19,7 @@ class IHCApiResponse:
 
 	def to_dict(self):
 		return {
+			"type": "IHCApiResponse",
 			"message": self.message,
 			"data": self.data,
 			"errors": self.errors

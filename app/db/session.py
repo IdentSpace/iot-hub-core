@@ -55,8 +55,11 @@ def default_data():
 				DeviceDriver(name="shelly_http", description="Shelly devices via HTTP"),
 				DeviceDriver(name="default_datascanner", description="Default Data Scanner 1D / 2D"),
 				DeviceDriver(name="default_nfcreader", description="Default NFC Scanner"),
+				DeviceDriver(name="hoptschuler_890", description="RFID/NFC Reader from Hopt und Schuler"),
 				DeviceDriver(name="as1620", description="Parking Barrier from Automatic Systems"),
-				DeviceDriver(name="feig_cpr0210", description="Feig CPR0210 NFC Reader"),
+				DeviceDriver(name="feig_cpr0210", description="FEIG CPR0210 NFC Reader"),
+				DeviceDriver(name="feig_cpr46", description="FEIG CPR46 NFC Reader"),
+				DeviceDriver(name="gis_tshr", description="TS-HR Reader from gis-net.de "),
 			]
 			session.add_all(default)
 

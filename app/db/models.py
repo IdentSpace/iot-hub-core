@@ -8,7 +8,6 @@ class SysValues(SQLModel, table=True):
 	name: str = Field(index=True, nullable=False, primary_key=True)
 	value: str = Field(nullable=True)
 
-# brauche ich?
 class DeviceType(SQLModel, table=True):
 	__tablename__ = "device_type"
 	id: int = Field(default=None, primary_key=True)
@@ -16,7 +15,6 @@ class DeviceType(SQLModel, table=True):
 	description: str = Field(nullable=True)
 	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
 
-# Brauche ich?
 class DeviceDriver(SQLModel, table=True):
 	__tablename__ = "device_driver"
 	id: int = Field(default=None, primary_key=True)
@@ -27,7 +25,7 @@ class DeviceDriver(SQLModel, table=True):
 class Device(SQLModel, table=True):
 	id: UUID = Field(default_factory=uuid4, primary_key=True)
 	name: str = Field(nullable=True,)
-	device_host: str = Field(index=True, nullable=False, unique=True)
+	device_host: str = Field(index=True, nullable=False)
 	device_type: str = Field(foreign_key="device_type.id", default=None, nullable=True)
 	device_driver: str = Field(foreign_key="device_driver.id", nullable=True)
 	baudrate: int = Field(default=19200, nullable=True)
@@ -108,6 +106,15 @@ class DeviceAssignment(SQLModel, table=True):
 	__table_args__ = (
         UniqueConstraint("device_id", "room_id", name="uq_device_room"),
     )
+
+class DeviceHook(SQLModel, table=True):
+	__tablename__ = "device_hook"
+	id: UUID = Field(default_factory=uuid4, primary_key=True)
+	key: str = Field(nullable=False)
+	path: str = Field(nullable=False)
+	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
+	updated_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
+
 
 class ApiKey(SQLModel, table=True):
 	id: int = Field(default=None, primary_key=True)

@@ -40,7 +40,7 @@ async def start_threading():
 			for device in devices:
 				try:
 					logger.info(f"==> factory driver: {device['name']} ({device['device_type']}) on {device['device_host']} with driver {device['device_driver_name']}")
-					driver = driver_factory(driver_type=device["device_driver_name"], args={'port': device["device_host"], 'baudrate': device["baudrate"]})
+					driver = driver_factory(driver_type=device["device_driver_name"], args={'port': device["device_host"], 'baudrate': device["baudrate"], 'id': device["id"]})
 					driver.listen_in_thread()
 					running_driver_threads.append(driver)
 				except Exception as e:

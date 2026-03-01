@@ -39,64 +39,66 @@ class DataScanner(ABC):
 		pass
 
 class Parser:
-	
-	def gs1_datamatrix(code: str) -> Dict[str, str]:
-		result = {}
-		result["raw"] = code
-		result["data"] = {}
+    @staticmethod
+    def find_gs_position(s: str):
+        GS = chr(29)
+        pos = s.find(GS)
+        # Wenn kein GS gefunden wurde, ist das Ende des Strings die Grenze
+        return pos if pos != -1 else len(s)
 
-		# TODO: validate is only numbers ?
-		
-		try:
-			codeLength = len(code)
+    @staticmethod
+    def gs1_datamatrix(code: str) -> Dict[str, any]:
+        result = {"raw": code, "data": {}, "success": False}
+        
+        # Bekannte Application Identifier (AIs)
+        FIXED_LENGTH_IDS = {
+            "01": 14,  # GTIN
+            "17": 6,   # Verfallsdatum (YYMMDD)
+            "11": 6,   # Produktionsdatum (YYMMDD)
+        }
+        VARIABLE_LENGTH_IDS = {
+            "10": 20,  # Charge / Lot
+            "21": 20,  # Serialnummer
+            "30": 8,   # Menge
+        }
 
-			result["length"] = codeLength
+        try:
+            i = 0
+            code_len = len(code)
+            
+            while i < code_len:
+                # AI extrahieren (meist 2 Stellen)
+                ai = code[i:i+2]
+                i += 2
 
-			if(codeLength < 14):
-				result["success"] = False
-				return result 
+                if ai in FIXED_LENGTH_IDS:
+                    length = FIXED_LENGTH_IDS[ai]
+                    result["data"][ai] = code[i:i+length]
+                    i += length
+                elif ai in VARIABLE_LENGTH_IDS:
+                    remainder = code[i:]
+                    # Suche nach GS oder Ende des Strings
+                    relative_end = Parser.find_gs_position(remainder)
+                    
+                    # Begrenzung durch max. erlaubte Länge des AIs
+                    actual_length = min(relative_end, VARIABLE_LENGTH_IDS[ai])
+                    
+                    result["data"][ai] = remainder[:actual_length]
+                    # Springe hinter den Wert + eventuellen GS (1 Zeichen)
+                    i += actual_length
+                    if i < code_len and code[i] == chr(29):
+                        i += 1 
+                else:
+                    # Unbekannter AI: Hier müsste man theoretisch abbrechen 
+                    # oder eine komplexere AI-Tabelle (3-4 stellig) nutzen
+                    break
 
-			FIXED_LENGTH_IDS = {
-				"01": 14,  # GTIN
-				"30": 8,   # Menge
-			}
+            # Validierung: GTIN (01) ist meist Pflicht
+            if "01" in result["data"]:
+                result["success"] = True
+                
+            return result
 
-			VARIABLE_LENGTH_IDS = {
-				"10": 20,  # Charge / Lot
-			}
-
-			result["data"]["01"] = None
-			result["data"]["10"] = None
-
-			i = 0
-			while i < codeLength:
-				id = code[i:i+2]
-				i += 2
-
-				if(id in FIXED_LENGTH_IDS):
-					length = FIXED_LENGTH_IDS[id]
-					value = code[i:i+length]
-					result["data"][id] = value
-					i += length
-				elif(id in VARIABLE_LENGTH_IDS):
-					c = code[i:]
-					e = Parser.find_gs_position(c)
-					length2 = i+e
-					value = code[i:length2]
-					result["data"][id] = value
-					i = length2+1
-
-			if(result["data"]["01"] == None):
-				result["success"] = False
-				return result
-
-			result["success"] = True
-			return result
-		except Exception as e:
-			print("Error Scanner Readline: " + str(e))
-			result["success"] = False
-			return result
-	
-	def find_gs_position(s: str):
-		GS = chr(29)
-		return s.find(GS, 0)
+        except Exception as e:
+            print(f"Error parsing Datamatrix: {e}")
+            return result

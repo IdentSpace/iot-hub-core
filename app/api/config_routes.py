@@ -1,9 +1,7 @@
-from typing import Union, List
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 from app.api.response import IHCApiResponse
 from app.db.config_controller import get_sysvalue, get_sysvalue_all
-from pathlib import Path
-import asyncio
+from app.core.utils import get_resource_path
 
 router = APIRouter()
 pending_requests = []
@@ -11,10 +9,7 @@ pending_requests = []
 @router.get("/state")
 async def rq_config_get_list_all():
 	import tomllib
-	import subprocess
-	ROOT_DIR = Path(__file__).parent.parent.parent
-	TOML_PATH = ROOT_DIR / "pyproject.toml"
-	
+	TOML_PATH = get_resource_path("pyproject.toml")
 	with open(TOML_PATH, "rb") as f:
 		config = tomllib.load(f)
 
@@ -44,6 +39,15 @@ async def rq_config_set_value(data: dict):
 	set_sysvalue(name, value)
 	return IHCApiResponse(message="success").api_response()
 
+@router.post("/delete")
+def req_config_delete(data: dict):
+	if "name" not in data:
+		return IHCApiResponse(message="error").add_error(key="config", value="Missing Config name").api_response()
+	
+	name = data.get("name")
+	from app.db.config_controller import delete_sysvalue
+	delete_sysvalue(name)
+	IHCApiResponse(message="success").api_response()
 
 @router.get("/restart/threads")
 async def rq_config_restart_threads():

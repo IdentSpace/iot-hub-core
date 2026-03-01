@@ -34,7 +34,9 @@ python ./run.py
 ```
 
 ## Build Windows Client
-python -m PyInstaller --onefile --add-data "app;app" --hidden-import fastapi --hidden-import uvicorn --hidden-import sqlmodel --hidden-import requests --hidden-import aiosqlite .\run.build.py
+```
+python -m PyInstaller --onedir --add-data "app;app" --add-data "pyproject.toml;." --hidden-import fastapi --hidden-import uvicorn --hidden-import sqlmodel --hidden-import requests --hidden-import aiosqlite .\run.build.py
+```
 
 ## Milestones
 1) Controll different device types with shellys over http

@@ -50,6 +50,7 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 					gs1DM = Parser.gs1_datamatrix(data)
 					if(gs1DM["success"] == True):
 						set_latest_dscanner_data(DataScannerData(type="dmgs1", data=gs1DM["data"]["01"], batch=gs1DM["data"]["10"]))
+						logger.info(f"Device {self.name} RX: {gs1DM["data"]}")
 					else:
 						set_latest_dscanner_data(DataScannerData(type="raw",data=data))
 				except Exception as e:
@@ -73,7 +74,7 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 
 
 	def close(self):
-		logger.info(f"Device {self.name}: close serial")
+		logger.info(f"Device {self.name}: close serial/thread")
 		self._stop_event.set()
 		if self.serial and self.serial.is_open:
 			self.serial.close()
