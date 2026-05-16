@@ -56,6 +56,9 @@ lsusb -d <usbvendorpid> -v
 
 systemctl status iot-hub-core
 journalctl -u iot-hub-core -f
+
+# list serial devices
+ls /dev/tty[A-Z]*
 ```
 
 ## Maintainer
