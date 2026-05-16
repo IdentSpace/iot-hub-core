@@ -15,7 +15,7 @@ class HoptSchuler890(DeviceBase, NfcReader):
 	def __init__(self, args:dict):
 		self.port = args.get("port", None)
 		self.baudrate = args.get("baudrate", 115200)
-		self.timeout = 0.4
+		self.timeout = 0.1
 		self.serial = None
 		self.thread = None
 		self.name = "HoptSchuler890"
@@ -72,9 +72,15 @@ class HoptSchuler890(DeviceBase, NfcReader):
 						time.sleep(2)
 						continue
 
-				data_bytes = self.serial.readline()
-				if not data_bytes:
+
+				if self.serial.in_waiting > 0:
+					time.sleep(0.05) # Kurze Pause, damit das Paket vollständig ankommen kann
+					data_bytes = self.serial.read(self.serial.in_waiting)
+				else:
 					continue
+				# data_bytes = self.serial.readline()
+				# if not data_bytes:
+					# continue
 
 				data = self.parse_rfid_response(data_bytes.hex())
 
@@ -209,109 +215,3 @@ class HoptSchuler890(DeviceBase, NfcReader):
 
 		uid = payload[2:2+uid_len]
 		return uid.hex().upper()
-
-	# ###########################################################
-	# ###########################################################
-	# ###########################################################
-	# ###########################################################
-
-	def extract_uidN(hex_string):
-		try:
-			data = bytes.fromhex(hex_string)
-			if len(data) < 7:
-				print("Datensatz zu kurz für gültiges Event.")
-				return None
-
-			offset = 4 if data[0] == 0x01 else 0
-			event_code = data[offset]
-
-			if event_code != 0x31:
-				print(f"Kein PICC_ACK Event (Code: {hex(event_code)})")
-				return None
-
-			tag_info = data[offset + 1]
-			taginfo_uid_map = {
-				0x40: 4,
-				0x44: 7,
-				0x48: 4,
-				0x68: 7,
-				0x6C: 7,
-				0x74: 7,
-				0x78: 10
-			}
-
-			uid_len = taginfo_uid_map.get(tag_info, 0)
-			if uid_len == 0:
-				print(f"Unbekannter TagInfo-Wert: {hex(tag_info)}")
-				return None
-
-			uid_start = offset + 2
-			uid_end = uid_start + uid_len
-			if len(data) < uid_end:
-				print("Datensatz zu kurz für vollständige UID.")
-				return None
-
-			uid_bytes = data[uid_start:uid_end]
-			uid_hex = uid_bytes.hex().upper()
-			return uid_hex
-
-		except Exception as e:
-			print(f"Fehler beim Parsen: {e}")
-			return None
-	
-	def extract_uid(hex_string):
-		try:
-			data = bytes.fromhex(hex_string)
-
-			# --- HEADER-SYNCHRONISIERUNG ---
-			start_index = data.find(b'\x01\x01')
-			if start_index == -1:
-				print("Kein gültiger Header (0101) gefunden.")
-				return ''
-			# Daten ab Header
-			data = data[start_index:]
-
-			# Mindestlänge prüfen
-			if len(data) < 7:
-				print("Datensatz zu kurz für gültiges Event.")
-				return ''
-
-			# Event-Code prüfen (0x31 = PICC_ACK)
-			event_code = data[4]
-			if event_code != 0x31:
-				print(f"Kein PICC_ACK Event (Code: {hex(event_code)})")
-				return ''
-
-			# TagInfo-Byte auslesen
-			tag_info = data[5]
-
-			# Bekannte TagInfo-Werte direkt zuordnen
-			taginfo_uid_map = {
-				0x40: 4,  # Mifare Classic
-				0x44: 7,  # Mifare Ultralight
-				0x48: 4,  # Mifare DESFire
-				0x68: 7,  # NTAG
-				0x6C: 7,  # ICODE
-				0x74: 7,  # DESFire EV1
-				0x78: 10  # ISO14443-4 Extended UID
-			}
-
-			uid_len = taginfo_uid_map.get(tag_info, 0)
-			if uid_len == 0:
-				print(f"Unbekannter TagInfo-Wert: {hex(tag_info)}")
-				return ''
-
-			# UID extrahieren
-			uid_start = 6
-			uid_end = uid_start + uid_len
-			if len(data) < uid_end:
-				print("Datensatz zu kurz für vollständige UID.")
-				return ''
-
-			uid_bytes = data[uid_start:uid_end]
-			uid_hex = uid_bytes.hex().upper()
-			return uid_hex
-
-		except Exception as e:
-			print(f"Fehler beim Parsen: {e}")
-			return ''

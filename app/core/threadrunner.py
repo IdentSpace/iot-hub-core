@@ -27,7 +27,6 @@ def get_async_session() -> AsyncSession:
     return async_session_maker()
 
 
-
 running_driver_threads = []
 
 async def start_threading():
@@ -35,8 +34,8 @@ async def start_threading():
 		try:
 			from app.devices.device_manager import get_devices_serial
 			devices = get_devices_serial()
-			
 			logger.info(f"Found {len(devices)} serial devices configs from DB")
+
 			for device in devices:
 				try:
 					logger.info(f"==> factory driver: {device['name']} ({device['device_type']}) on {device['device_host']} with driver {device['device_driver_name']}")

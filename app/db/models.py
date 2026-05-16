@@ -73,6 +73,38 @@ class Key(SQLModel, table=True):
     )
 	expires_at: datetime = Field(nullable=True)
 
+class MQTTClient(SQLModel, table=True):
+	id: int = Field(default=None, primary_key=True)
+	name: str = Field(nullable=False, unique=True)
+	address: str = Field(nullable=False, unique=True)
+	port: int = Field(nullable=False, default=1883)
+	username: str = Field(nullable=True, unique=False)
+	password: str = Field(nullable=True, unique=False)
+	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
+	updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            default=lambda: datetime.now(),
+            onupdate=lambda: datetime.now(),
+            nullable=False
+        )
+    )
+	expires_at: datetime = Field(nullable=True)
+
+class MQTTClientSub(SQLModel, table=True):
+	id: int = Field(default=None, primary_key=True)
+	topic: str = Field(nullable=False, unique=True)
+	created_at: datetime = Field(default_factory=lambda: datetime.now(), nullable=False)
+	updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            default=lambda: datetime.now(),
+            onupdate=lambda: datetime.now(),
+            nullable=False
+        )
+    )
+	expires_at: datetime = Field(nullable=True)
+
 class Room(SQLModel, table=True):
 	id: UUID = Field(default_factory=uuid4, primary_key=True)
 	name: str = Field(nullable=False)

@@ -14,6 +14,7 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 		self.port = args.get("port", None)
 		self.baudrate = args.get("baudrate", 9600) or 9600
 		self.timeout = args.get("timeout", 1)
+		self.id = args.get("id", None)
 		self.thread = None
 		self.serial = None
 		self.name = "DafaultDataScanner"
@@ -49,10 +50,10 @@ class DefaultDataScanner(DeviceBase, DataScanner):
 					logger.info(f"Device {self.name} RX: {data}")
 					gs1DM = Parser.gs1_datamatrix(data)
 					if(gs1DM["success"] == True):
-						set_latest_dscanner_data(DataScannerData(type="dmgs1", data=gs1DM["data"]["01"], batch=gs1DM["data"]["10"]))
+						set_latest_dscanner_data(DataScannerData(type="dmgs1", data=gs1DM["data"]["01"], batch=gs1DM["data"]["10"], id=self.id))
 						logger.info(f"Device {self.name} RX: {gs1DM["data"]}")
 					else:
-						set_latest_dscanner_data(DataScannerData(type="raw",data=data))
+						set_latest_dscanner_data(DataScannerData(type="raw", data=data, id=self.id))
 				except Exception as e:
 					logger.error(f"Device {self.name} Error(R2): " + str(e))
 					continue
